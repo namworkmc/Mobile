@@ -1,26 +1,32 @@
 package com.example.studentmanagementapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.ListView
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.RadioGroup
+import androidx.appcompat.app.AppCompatActivity
 
 class StudentInformation : AppCompatActivity() {
-    private var simpleListView: ListView? = null
-    private var items = arrayListOf<String>()
+
+    private var fullNameEditText: EditText? = null
+    private var dobEditText: EditText? = null
+    private var classIdEditText: EditText? = null
+    private var genderRadioGr: RadioGroup? = null
+    private var saveBtn: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_student_list)
+        setContentView(R.layout.activity_student_information)
 
-        simpleListView = findViewById(R.id.listView)
-        //create simple data
-        for (i in 0..200) {
-            items.add("Data $i")
+        fullNameEditText = findViewById(R.id.fullNameEditText)
+        dobEditText = findViewById(R.id.dobEditText)
+        classIdEditText = findViewById(R.id.classIdEditText)
+        genderRadioGr = findViewById(R.id.genderRadioGroup)
+        saveBtn = findViewById(R.id.saveBtn)
+
+        saveBtn!!.setOnClickListener {
+            Log.i("test", "hehe")
         }
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
-
-        simpleListView!!.adapter = adapter
     }
 }

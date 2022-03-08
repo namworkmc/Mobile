@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Programming/Mobile/Week4/StudentManagementApp/app/src/main/res/layout/activity_student_information.xml" value="0.21875" />
         <entry key="app/src/main/res/drawable/ic_baseline_school_24.xml" value="0.3927083333333333" />
         <entry key="app/src/main/res/layout/activity_choose_class.xml" value="0.3269927536231884" />
         <entry key="app/src/main/res/layout/activity_student_information.xml" value="0.5" />
