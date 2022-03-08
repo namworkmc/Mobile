@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".StudentInformation">
+        tools:context=".StudentInformationActivity">
 
     <TextView
             android:text="Student Information"
@@ -167,7 +167,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"
-            android:id="@+id/imageView"
+            android:id="@+id/dropDownBtn"
             app:layout_constraintTop_toTopOf="@+id/classIdEditText"
             app:layout_constraintBottom_toBottomOf="@+id/classIdEditText"
             app:layout_constraintEnd_toEndOf="@+id/classIdEditText" />
