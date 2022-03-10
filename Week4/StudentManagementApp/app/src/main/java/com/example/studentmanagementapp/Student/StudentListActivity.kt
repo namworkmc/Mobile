@@ -9,4 +9,8 @@ class StudentListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_list)
     }
+
+    override fun onStart() {
+        super.onStart()
+    }
 }

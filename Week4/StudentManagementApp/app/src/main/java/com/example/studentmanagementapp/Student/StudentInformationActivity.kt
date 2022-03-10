@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentmanagementapp.ClassId.ClassIdActivity
 import com.example.studentmanagementapp.R
+import java.io.FileOutputStream
 import java.io.OutputStreamWriter
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -30,10 +31,11 @@ class StudentInformationActivity : AppCompatActivity() {
     private fun saveBtnHandler(str: String) {
         try {
             //File will be in "/data/data/$packageName/files/"
-            val out = OutputStreamWriter(openFileOutput(fileName, 0))
-            out.write(str + "\n")
-            out.flush()
-            out.close()
+            FileOutputStream(fileName, true).bufferedWriter().use { writer ->
+                writer.write(str)
+                writer.flush()
+                writer.close()
+            }
         } catch (t: Throwable) {
             Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
         }
@@ -72,9 +74,9 @@ class StudentInformationActivity : AppCompatActivity() {
                 val intent = Intent(this, StudentListActivity::class.java)
                 startActivityForResult(intent, 1111)
 
-                val str = "$fullName - $dob - $classId"
-                Log.i("hehe", str)
-                saveBtnHandler(str)
+                val student = Student(fullName, dob, classId)
+                Log.i("hehe", student.toString())
+                saveBtnHandler(student.toString())
             }
         }
 
