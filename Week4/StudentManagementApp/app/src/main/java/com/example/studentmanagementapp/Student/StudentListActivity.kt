@@ -1,7 +1,8 @@
-package com.example.studentmanagementapp
+package com.example.studentmanagementapp.Student
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.studentmanagementapp.R
 
 class StudentListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
