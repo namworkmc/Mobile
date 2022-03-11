@@ -34,32 +34,32 @@
                         android:text="TextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView1"
+                        android:id="@+id/nameTextView"
                         android:layout_weight="1"
                         android:paddingStart="25dp"
                         android:paddingVertical="10dp"
-                        android:textSize="16dp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                 <TextView
                         android:text="TextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView2"
+                        android:id="@+id/classIdTextView"
                         android:layout_weight="1"
                         android:paddingStart="25dp"
                         android:paddingVertical="10dp"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
 
                 <TextView
                         android:text="TextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView3"
+                        android:id="@+id/infoTextView"
                         android:layout_weight="1"
                         android:paddingStart="25dp"
                         android:paddingVertical="10dp"
-                        android:textSize="12dp" />
+                        android:textSize="14sp" />
 
             </LinearLayout>
 

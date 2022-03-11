@@ -10,13 +10,16 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.StudentManagementApp">
         <activity
+                android:name=".Student.EditStudentInfoActivity"
+                android:exported="false" />
+        <activity
                 android:name=".Student.StudentListActivity"
                 android:exported="false" />
         <activity
-                android:name=".ClassId.ClassIdActivity"
+                android:name=".ClassId.ClassIdListActivity"
                 android:exported="false" />
         <activity
-                android:name=".Student.StudentInformationActivity"
+                android:name=".Student.StudentInfoActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

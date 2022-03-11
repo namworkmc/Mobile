@@ -9,14 +9,13 @@ import android.util.Log
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.example.studentmanagementapp.ClassId.ClassIdActivity
+import com.example.studentmanagementapp.ClassId.ClassIdListActivity
 import com.example.studentmanagementapp.R
-import java.io.FileOutputStream
 import java.io.OutputStreamWriter
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class StudentInformationActivity : AppCompatActivity() {
+class StudentInfoActivity : AppCompatActivity() {
 
     private val REQUEST_CODE = 1111
     private val fileName = "students_info.txt"
@@ -28,16 +27,42 @@ class StudentInformationActivity : AppCompatActivity() {
     private var saveBtn: Button? = null
     private var dropDownBtn: ImageView? = null
 
-    private fun saveBtnHandler(str: String) {
-        try {
-            //File will be in "/data/data/$packageName/files/"
-            FileOutputStream(fileName, true).bufferedWriter().use { writer ->
-                writer.write(str)
-                writer.flush()
-                writer.close()
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun saveBtnHandler() {
+        val genderId = genderRadioGr!!.checkedRadioButtonId
+
+        val isEmpty =
+            TextUtils.isEmpty(fullNameEditText!!.text) || TextUtils.isEmpty(dobEditText!!.text) || TextUtils.isEmpty(
+                classIdEditText!!.text
+            ) || genderId == -1
+
+        if (isEmpty) {
+            Log.i("hehe", "Empty field")
+            Toast.makeText(this, "All fields to be required", Toast.LENGTH_SHORT).show()
+        } else {
+            val selectedValue: RadioButton? = findViewById(genderId)
+            val gender = selectedValue!!.text as String
+            val fullName = fullNameEditText!!.text.toString()
+            val dob =
+                LocalDate.parse(dobEditText!!.text.toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            val classId = classIdEditText!!.text.toString()
+
+            // Đổi activity
+            val intent = Intent(this, StudentListActivity::class.java)
+            startActivityForResult(intent, 1111)
+
+            val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
+            Log.i("hehe", student.toString())
+            try {
+                //File will be in "/data/data/$packageName/files/"
+                val out = OutputStreamWriter(openFileOutput(fileName, MODE_APPEND))
+                out.append(student.toString())
+                out.append("\n")
+                out.flush()
+                out.close()
+            } catch (t: Throwable) {
+                Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
             }
-        } catch (t: Throwable) {
-            Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -54,43 +79,15 @@ class StudentInformationActivity : AppCompatActivity() {
         dropDownBtn = findViewById(R.id.dropDownBtn)
 
         saveBtn!!.setOnClickListener {
-            val genderId = genderRadioGr!!.checkedRadioButtonId
-
-            val isEmpty =
-                TextUtils.isEmpty(fullNameEditText!!.text) || TextUtils.isEmpty(dobEditText!!.text) || TextUtils.isEmpty(
-                    classIdEditText!!.text
-                ) || genderId == -1
-
-            if (isEmpty) {
-                Log.i("hehe", "Empty field")
-                Toast.makeText(this, "All fields to be required", Toast.LENGTH_SHORT).show()
-            } else {
-                val fullName = fullNameEditText!!.text.toString()
-                val dob =
-                    LocalDate.parse(dobEditText!!.text.toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                val classId = classIdEditText!!.text.toString()
-
-                // Đổi activity
-                val intent = Intent(this, StudentListActivity::class.java)
-                startActivityForResult(intent, 1111)
-
-                val student = Student(fullName, dob, classId)
-                Log.i("hehe", student.toString())
-                saveBtnHandler(student.toString())
-            }
+            saveBtnHandler()
         }
 
         dropDownBtn!!.setOnClickListener {
             Log.i("hehe", "Clicked dropdown")
-            val intent = Intent(this, ClassIdActivity::class.java)
+            val intent = Intent(this, ClassIdListActivity::class.java)
             startActivityForResult(intent, 1111)
         }
     }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

@@ -30,5 +30,5 @@
             android:id="@+id/listView"
             android:layout_marginHorizontal="12dp"
             tools:listitem="@layout/student_list_item"
-            />
+            android:layout_marginBottom="5dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
