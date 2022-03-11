@@ -1,6 +1,5 @@
 package com.example.studentmanagementapp.Student
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +9,6 @@ import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.example.studentmanagementapp.ClassId.ClassId
 import com.example.studentmanagementapp.R
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -61,10 +59,9 @@ class StudentListActivity : AppCompatActivity() {
         listView.adapter = StudentAdapter(this, R.layout.student_list_item, arrayList)
 
         listView.setOnItemClickListener { _: AdapterView<*>, _: View, position: Int, _: Long ->
-            val replyIntent = Intent()
-            replyIntent.putExtra("StudentListActivity", arrayList[position].toString())
-            setResult(Activity.RESULT_OK, replyIntent)
-            finish()
+            val intent = Intent(this, EditStudentInfoActivity::class.java)
+            intent.putExtra("StudentListActivity", arrayList[position].toString())
+            startActivityForResult(intent, 1111)
         }
     }
 }

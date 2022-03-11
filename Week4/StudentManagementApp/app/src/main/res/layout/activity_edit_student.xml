@@ -154,14 +154,14 @@
             android:layout_width="383dp"
             android:layout_height="62dp"
             android:id="@+id/editBtn"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/genderRadioGroup"
-            app:layout_constraintVertical_bias="0.445"
+            app:layout_constraintVertical_bias="0.863"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:backgroundTint="#FB0000" />
+            android:backgroundTint="#FB0000"
+            app:layout_constraintBottom_toTopOf="@+id/saveBtn" />
 
     <Button
             android:text="SAVE"

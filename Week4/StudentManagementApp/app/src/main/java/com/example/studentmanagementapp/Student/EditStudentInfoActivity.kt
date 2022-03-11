@@ -23,6 +23,14 @@ class EditStudentInfoActivity : AppCompatActivity() {
         dobEditText = findViewById(R.id.dobEditText)
         classIdEditText = findViewById(R.id.classIdEditText)
         genderRadioGroup = findViewById(R.id.genderRadioGroup)
+
+        val reply = intent.getStringExtra("StudentListActivity")
+        Log.i("hehe", reply!!)
+        val info = reply.split(" - ")
+
+        fullNameEditText!!.setText(info[0])
+        dobEditText!!.setText(info[1])
+        classIdEditText!!.setText(info[3])
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -33,10 +41,10 @@ class EditStudentInfoActivity : AppCompatActivity() {
                 val reply = data!!.getStringExtra("StudentListActivity")
                 Log.i("hehe", reply.toString())
                 val info = reply!!.split(" - ")
-//
-//                fullNameEditText!!.setText(info[0])
-//                dobEditText!!.setText(info[1])
-//                classIdEditText!!.setText(info[3])
+
+                fullNameEditText!!.setText(info[0])
+                dobEditText!!.setText(info[1])
+                classIdEditText!!.setText(info[3])
             }
         }
     }

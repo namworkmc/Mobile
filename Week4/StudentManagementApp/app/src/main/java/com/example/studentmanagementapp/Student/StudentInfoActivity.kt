@@ -52,7 +52,6 @@ class StudentInfoActivity : AppCompatActivity() {
             startActivityForResult(intent, 1111)
 
             val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
-            Log.i("hehe", student.toString())
             try {
                 //File will be in "/data/data/$packageName/files/"
                 val out = OutputStreamWriter(openFileOutput(fileName, MODE_APPEND))
