@@ -43,8 +43,7 @@ class StudentInfoActivity : AppCompatActivity() {
             val selectedValue: RadioButton? = findViewById(genderId)
             val gender = selectedValue!!.text as String
             val fullName = fullNameEditText!!.text.toString()
-            val dob =
-                LocalDate.parse(dobEditText!!.text.toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            val dob = dobEditText!!.text.toString()
             val classId = classIdEditText!!.text.toString()
 
             val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
@@ -81,7 +80,6 @@ class StudentInfoActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.i("hehe", "item clicked")
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 val reply = data!!.getStringExtra("ClassIdActivity")
