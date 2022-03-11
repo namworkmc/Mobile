@@ -1,10 +1,9 @@
 package com.example.studentmanagementapp.Student
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentmanagementapp.R
@@ -28,24 +27,13 @@ class EditStudentInfoActivity : AppCompatActivity() {
         Log.i("hehe", reply!!)
         val info = reply.split(" - ")
 
-        fullNameEditText!!.setText(info[0])
-        dobEditText!!.setText(info[1])
-        classIdEditText!!.setText(info[3])
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.i("hehe", "item clicked")
-        if (requestCode == 1111) {
-            if (resultCode == Activity.RESULT_OK) {
-                val reply = data!!.getStringExtra("StudentListActivity")
-                Log.i("hehe", reply.toString())
-                val info = reply!!.split(" - ")
-
-                fullNameEditText!!.setText(info[0])
-                dobEditText!!.setText(info[1])
-                classIdEditText!!.setText(info[3])
-            }
+        fullNameEditText!!.setText(info[1])
+        dobEditText!!.setText(info[2])
+        when (info[3]) {
+            "Male" -> findViewById<RadioButton>(R.id.maleRadioButton).isChecked = true
+            "Female" -> findViewById<RadioButton>(R.id.femaleRadioButton).isChecked = true
+            else -> findViewById<RadioButton>(R.id.otherRadioButton).isChecked = true
         }
+        classIdEditText!!.setText(info[4])
     }
 }

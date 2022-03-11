@@ -133,20 +133,20 @@
                 android:text="Male"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButton" />
+                android:id="@+id/maleRadioButton" />
 
         <RadioButton
                 android:text="Female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="50dp"
-                android:id="@+id/radioButton2" />
+                android:id="@+id/femaleRadioButton" />
 
         <RadioButton
                 android:text="Other"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButton3" />
+                android:id="@+id/otherRadioButton" />
     </RadioGroup>
 
     <Button

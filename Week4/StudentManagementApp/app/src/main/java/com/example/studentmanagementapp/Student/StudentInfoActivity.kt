@@ -47,21 +47,12 @@ class StudentInfoActivity : AppCompatActivity() {
                 LocalDate.parse(dobEditText!!.text.toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             val classId = classIdEditText!!.text.toString()
 
+            val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
+
             // Đổi activity
             val intent = Intent(this, StudentListActivity::class.java)
+            intent.putExtra("StudentInfoActivity", student.toString())
             startActivityForResult(intent, 1111)
-
-            val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
-            try {
-                //File will be in "/data/data/$packageName/files/"
-                val out = OutputStreamWriter(openFileOutput(fileName, MODE_APPEND))
-                out.append(student.toString())
-                out.append("\n")
-                out.flush()
-                out.close()
-            } catch (t: Throwable) {
-                Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
