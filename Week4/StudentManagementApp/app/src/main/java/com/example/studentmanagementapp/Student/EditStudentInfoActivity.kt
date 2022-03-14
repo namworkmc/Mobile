@@ -30,7 +30,6 @@ class EditStudentInfoActivity : AppCompatActivity() {
             ) || genderId == -1
 
         if (isEmpty) {
-            Log.i("hehe", "Empty field")
             Toast.makeText(this, "All fields to be required", Toast.LENGTH_SHORT).show()
         } else {
             // Lấy data

@@ -1,12 +1,11 @@
 package com.example.studentmanagementapp.Student
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -15,7 +14,6 @@ import com.example.studentmanagementapp.R
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.LocalDate
 
 class StudentListActivity : AppCompatActivity() {
     private val fileName = "students_info.txt"
@@ -119,7 +117,7 @@ class StudentListActivity : AppCompatActivity() {
                     if (reply != null) {
                         val position = reply.toInt()
                         arrayList.removeAt(position)
-                        listView!!.adapter = StudentAdapter(this, R.layout.student_list_item, arrayList)
+                        (listView!!.adapter as BaseAdapter).notifyDataSetChanged()
                     }
                 }
 
@@ -138,7 +136,7 @@ class StudentListActivity : AppCompatActivity() {
 
                         arrayList.removeAt(position)
                         arrayList.add(position, student)
-                        listView!!.adapter = StudentAdapter(this, R.layout.student_list_item, arrayList)
+                        (listView!!.adapter as BaseAdapter).notifyDataSetChanged()
                     }
                 }
             }

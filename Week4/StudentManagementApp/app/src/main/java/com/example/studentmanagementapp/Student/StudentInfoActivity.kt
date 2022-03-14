@@ -37,7 +37,6 @@ class StudentInfoActivity : AppCompatActivity() {
             ) || genderId == -1
 
         if (isEmpty) {
-            Log.i("hehe", "Empty field")
             Toast.makeText(this, "All fields to be required", Toast.LENGTH_SHORT).show()
         } else {
             val selectedValue: RadioButton? = findViewById(genderId)
@@ -72,7 +71,6 @@ class StudentInfoActivity : AppCompatActivity() {
         }
 
         dropDownBtn!!.setOnClickListener {
-            Log.i("hehe", "Clicked dropdown")
             val intent = Intent(this, ClassIdListActivity::class.java)
             startActivityForResult(intent, 1111)
         }
@@ -83,9 +81,6 @@ class StudentInfoActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 val reply = data!!.getStringExtra("ClassIdActivity")
-                if (reply != null) {
-                    Log.i("hehe", reply)
-                }
                 classIdEditText!!.setText(reply)
             }
         }
