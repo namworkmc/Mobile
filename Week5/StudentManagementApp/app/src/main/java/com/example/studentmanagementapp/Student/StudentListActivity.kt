@@ -1,11 +1,9 @@
 package com.example.studentmanagementapp.Student
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.Adapter
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +13,10 @@ import com.example.studentmanagementapp.R
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
+import android.widget.BaseAdapter
+
+
+
 
 class StudentListActivity : AppCompatActivity() {
     private val fileName = "students_info.txt"
@@ -22,6 +24,8 @@ class StudentListActivity : AppCompatActivity() {
     private val students = ArrayList<Student>()
 
     private var recyclerView: RecyclerView? = null
+
+    private val adapter = StudentAdapter(students)
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadStudentList() {
@@ -74,21 +78,21 @@ class StudentListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_student_list)
         loadStudentList()
 
-        val newStudentInfoStr = intent.getStringExtra("StudentInfoActivity")
-        if (newStudentInfoStr != null) {
-            val newStudentInfo = newStudentInfoStr.split(" - ")
-            students.add(
-                Student(
-                    newStudentInfo[0],
-                    newStudentInfo[1],
-                    newStudentInfo[2],
-                    newStudentInfo[3],
-                    R.drawable.ic_baseline_school_24
-                )
-            )
-        }
+        // TODO("add new student")
+//        val newStudentInfoStr = intent.getStringExtra("StudentInfoActivity")
+//        if (newStudentInfoStr != null) {
+//            val newStudentInfo = newStudentInfoStr.split(" - ")
+//            students.add(
+//                Student(
+//                    newStudentInfo[0],
+//                    newStudentInfo[1],
+//                    newStudentInfo[2],
+//                    newStudentInfo[3],
+//                    R.drawable.ic_baseline_school_24
+//                )
+//            )
+//        }
 
-        val adapter = StudentAdapter(students)
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView!!.adapter = adapter
         recyclerView!!.layoutManager = LinearLayoutManager(this)
@@ -122,7 +126,7 @@ class StudentListActivity : AppCompatActivity() {
                     if (reply != null) {
                         val position = reply.toInt()
                         students.removeAt(position)
-                        recyclerView!!.adapter = StudentAdapter(students)
+                        adapter.notifyItemRemoved(position)
                     }
                 }
 
@@ -139,9 +143,8 @@ class StudentListActivity : AppCompatActivity() {
                             R.drawable.ic_baseline_school_24
                         )
 
-                        students.removeAt(position)
-                        students.add(position, student)
-                        recyclerView!!.adapter = StudentAdapter(students)
+                        students[position] = student
+                        adapter.notifyItemChanged(position)
                     }
                 }
             }

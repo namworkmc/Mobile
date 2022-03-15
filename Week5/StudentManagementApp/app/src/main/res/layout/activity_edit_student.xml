@@ -80,7 +80,7 @@
             android:text="Class"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView4"
+            android:id="@+id/classTextView"
             app:layout_constraintTop_toBottomOf="@+id/dobEditText"
             android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,21 +88,21 @@
             app:layout_constraintHorizontal_bias="0.042"
             android:layout_marginStart="5dp" />
 
-    <EditText
+    <Spinner
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
-            android:id="@+id/classIdEditText"
-            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            android:id="@+id/classIdSpinner"
+            app:layout_constraintTop_toBottomOf="@+id/classTextView"
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.079"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:hint="Class ID"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            style="@style/Widget.AppCompat.Spinner.Underlined" />
 
     <TextView
             android:text="Gender"
@@ -112,7 +112,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.043"
-            app:layout_constraintTop_toBottomOf="@+id/classIdEditText"
+            app:layout_constraintTop_toBottomOf="@+id/classIdSpinner"
             android:layout_marginTop="20dp"
             android:layout_marginStart="5dp" />
 
@@ -177,12 +177,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:backgroundTint="#029ce5" />
 
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"
-            android:id="@+id/dropDownBtn"
-            app:layout_constraintTop_toTopOf="@+id/classIdEditText"
-            app:layout_constraintBottom_toBottomOf="@+id/classIdEditText"
-            app:layout_constraintEnd_toEndOf="@+id/classIdEditText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
