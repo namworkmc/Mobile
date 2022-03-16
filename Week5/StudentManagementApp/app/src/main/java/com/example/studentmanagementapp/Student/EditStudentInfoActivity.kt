@@ -20,7 +20,7 @@ class EditStudentInfoActivity : AppCompatActivity() {
     private var deleteBtn: Button? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun saveBtnHandler(position: Int) {
+    private fun saveBtnHandler() {
         val genderId = genderRadioGroup!!.checkedRadioButtonId
         val classId = classIdSpinner!!.selectedItem.toString()
 
@@ -79,7 +79,7 @@ class EditStudentInfoActivity : AppCompatActivity() {
         deleteBtn = findViewById(R.id.deleteBtn)
 
         saveBtn!!.setOnClickListener {
-            saveBtnHandler(position)
+            saveBtnHandler()
         }
 
         deleteBtn!!.setOnClickListener {

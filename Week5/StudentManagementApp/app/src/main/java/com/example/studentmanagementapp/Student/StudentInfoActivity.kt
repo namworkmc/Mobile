@@ -44,7 +44,8 @@ class StudentInfoActivity : AppCompatActivity() {
             // Đổi activity
             val intent = Intent(this, StudentListActivity::class.java)
             intent.putExtra("StudentInfoActivity", student.toString())
-            startActivityForResult(intent, 1111)
+            setResult(2, intent)
+            finish()
         }
     }
 
@@ -70,7 +71,6 @@ class StudentInfoActivity : AppCompatActivity() {
         }
 
 //        classIdSpinner!!.setOnClickListener {
-//            Log.i("hehe", "Clicked dropdown")
 //            val intent = Intent(this, ClassIdListActivity::class.java)
 //            startActivityForResult(intent, 1111)
 //        }

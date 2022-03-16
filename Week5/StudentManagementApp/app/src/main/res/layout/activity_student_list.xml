@@ -27,15 +27,15 @@
             android:id="@+id/recyclerView"
             android:layout_marginHorizontal="12dp"
             tools:listitem="@layout/student_list_item"
-            app:layout_constraintTop_toBottomOf="@+id/searchEditText"
+            app:layout_constraintTop_toBottomOf="@+id/searchAutoCompleteTV"
             app:layout_constraintBottom_toTopOf="@+id/addStudentBtn" />
 
-    <EditText
+    <AutoCompleteTextView
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:inputType="textPersonName"
             android:ems="10"
-            android:id="@+id/searchEditText"
+            android:id="@+id/searchAutoCompleteTV"
             app:layout_constraintTop_toBottomOf="@+id/studentsTextView"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +44,7 @@
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
             app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+            android:completionThreshold="3"
             android:hint="Input name" />
 
     <Button
