@@ -42,9 +42,9 @@ class StudentInfoActivity : AppCompatActivity() {
             val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
 
             // Đổi activity
-            val intent = Intent(this, StudentListActivity::class.java)
+            val intent = Intent()
             intent.putExtra("StudentInfoActivity", student.toString())
-            setResult(2, intent)
+            setResult(StudentActivity.ADD, intent)
             finish()
         }
     }
@@ -69,11 +69,6 @@ class StudentInfoActivity : AppCompatActivity() {
         saveBtn!!.setOnClickListener {
             saveBtnHandler()
         }
-
-//        classIdSpinner!!.setOnClickListener {
-//            val intent = Intent(this, ClassIdListActivity::class.java)
-//            startActivityForResult(intent, 1111)
-//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -84,7 +79,6 @@ class StudentInfoActivity : AppCompatActivity() {
                 if (reply != null) {
                     Log.i("hehe", reply)
                 }
-//                classIdEditText!!.setText(reply)
             }
         }
     }

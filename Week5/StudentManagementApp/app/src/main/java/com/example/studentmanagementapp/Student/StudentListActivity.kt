@@ -1,5 +1,7 @@
 package com.example.studentmanagementapp.Student
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -22,14 +24,14 @@ import java.nio.file.Paths
 class StudentListActivity : AppCompatActivity() {
     private val fileName = "students_info.txt"
 
-    private val students = ArrayList<Student>()
-    private val studentsName = ArrayList<String>()
+    private val baseStudentAL = ArrayList<Student>()
+    private val studentAL = ArrayList<Student>()
+    private val studentNameAL = ArrayList<String>()
 
     private var recyclerView: RecyclerView? = null
     private var addStudentBtn: Button? = null
     private var searchAutoCompleteTV: AutoCompleteTextView? = null
 
-    private val studentAdapter = StudentAdapter(students)
     private var studentsNameAdapter: ArrayAdapter<String>? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -40,6 +42,7 @@ class StudentListActivity : AppCompatActivity() {
         loadStudentList()
 
         recyclerView = findViewById(R.id.recyclerView)
+        val studentAdapter = StudentAdapter(studentAL)
         recyclerView!!.adapter = studentAdapter
         recyclerView!!.layoutManager = LinearLayoutManager(this)
         recyclerView!!.setHasFixedSize(true)
@@ -56,12 +59,22 @@ class StudentListActivity : AppCompatActivity() {
         }
 
         searchAutoCompleteTV = findViewById(R.id.searchAutoCompleteTV)
-        studentsNameAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, studentsName)
+        studentsNameAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, studentNameAL)
         searchAutoCompleteTV!!.setAdapter(studentsNameAdapter)
         searchAutoCompleteTV!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onTextChanged(searchStr: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (searchStr!!.isEmpty()) {
+                    studentAL.clear()
+                    studentAL.addAll(baseStudentAL)
+                    recyclerView!!.adapter!!.notifyDataSetChanged()
+                } else {
+                    studentAL.clear()
+                    studentAL.addAll(baseStudentAL.filter { it.fullName.lowercase().startsWith(searchStr.toString().lowercase()) })
+                    recyclerView!!.adapter!!.notifyDataSetChanged()
+                }
             }
         })
     }
@@ -76,28 +89,15 @@ class StudentListActivity : AppCompatActivity() {
         saveStudentList()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1111) {
+            Activity.ACCESSIBILITY_SERVICE
             when (resultCode) {
-                0 -> {
+                StudentActivity.DELETE -> {
                     val reply = data!!.getStringExtra("DeleteStudentInfo")
-                    if (reply != null) {
-                        val position = reply.toInt()
-
-                        // Remove info
-                        students.removeAt(position)
-                        studentAdapter.notifyItemRemoved(position)
-
-                        // Remove name
-                        studentsName.removeAt(position)
-                        studentsNameAdapter!!.notifyDataSetChanged()
-                    }
-                }
-
-                1 -> {
-                    val reply = data!!.getStringExtra("EditStudentInfo")
                     if (reply != null) {
                         val info = reply.split(" - ")
                         val position = info[0].toInt()
@@ -111,38 +111,68 @@ class StudentListActivity : AppCompatActivity() {
                             R.drawable.ic_baseline_school_24
                         )
 
-                        // Info
-                        students[position] = student
-                        studentAdapter.notifyItemChanged(position)
-                        studentsNameAdapter!!.notifyDataSetChanged()
+                        // Remove info
+                        baseStudentAL.remove(student)
+                        studentAL.remove(student)
 
-                        // Name
-                        studentsName[position] = student.fullName
+                        recyclerView!!.adapter!!.notifyItemRemoved(position)
+
+                        // Remove name
+                        studentNameAL.removeAt(position)
                         studentsNameAdapter!!.notifyDataSetChanged()
                     }
                 }
 
-                2 -> {
+                StudentActivity.EDIT -> {
+                    val reply = data!!.getStringExtra("EditStudentInfo")
+                    if (reply != null) {
+                        val info = reply.split(" - ")
+                        val position = info[0].toInt()
+
+                        // Edit info
+                        val studentBeforeModify = studentAL[position]
+                        val modifiedStudent = Student(
+                            info[1],
+                            info[2],
+                            info[3],
+                            info[4],
+                            R.drawable.ic_baseline_school_24
+                        )
+
+                        // Info
+                        val positionBeforeModify = baseStudentAL.indexOf(studentBeforeModify)
+
+                        baseStudentAL[positionBeforeModify] = modifiedStudent
+                        studentAL[position] = modifiedStudent
+                        recyclerView!!.adapter!!.notifyItemChanged(position)
+
+                        // Name
+                        studentNameAL[positionBeforeModify] = modifiedStudent.fullName
+                        studentsNameAdapter!!.notifyDataSetChanged()
+                    }
+                }
+
+                StudentActivity.ADD -> {
                     // TODO("add new student")
-                    val newStudentInfoStr = intent.getStringExtra("StudentInfoActivity")
+                    val newStudentInfoStr = data!!.getStringExtra("StudentInfoActivity")
                     if (newStudentInfoStr != null) {
                         val newStudentInfo = newStudentInfoStr.split(" - ")
 
                         // Info
-                        students.add(
-                            Student(
-                                newStudentInfo[0],
-                                newStudentInfo[1],
-                                newStudentInfo[2],
-                                newStudentInfo[3],
-                                R.drawable.ic_baseline_school_24
-                            )
+                        val newStudent = Student(
+                            newStudentInfo[0],
+                            newStudentInfo[1],
+                            newStudentInfo[2],
+                            newStudentInfo[3],
+                            R.drawable.ic_baseline_school_24
                         )
-                        studentAdapter.notifyItemInserted(students.size - 1)
+                        baseStudentAL.add(newStudent)
+                        studentAL.add(newStudent)
 
+                        recyclerView!!.adapter!!.notifyItemInserted(studentAL.size - 1)
 
                         // Name
-                        studentsName.add(newStudentInfo[0])
+                        studentNameAL.add(newStudentInfo[0])
                         studentsNameAdapter!!.notifyDataSetChanged()
                     }
                 }
@@ -162,7 +192,7 @@ class StudentListActivity : AppCompatActivity() {
                         val info = line.split(" - ")
 
                         // Push info
-                        students.add(
+                        baseStudentAL.add(
                             Student(
                                 info[0],
                                 info[1],
@@ -172,13 +202,15 @@ class StudentListActivity : AppCompatActivity() {
                             )
                         )
                         // Push name
-                        studentsName.add(info[0])
+                        studentNameAL.add(info[0])
 
                         line = reader.readLine()
                     }
                     inputStream.close()
                 }
             }
+
+            studentAL.addAll(baseStudentAL)
         } catch (e: FileNotFoundException) {
             Toast.makeText(this, "Exception: $e", Toast.LENGTH_SHORT).show()
         }
@@ -188,7 +220,7 @@ class StudentListActivity : AppCompatActivity() {
         try {
             //File will be in "/data/data/$packageName/files/"
             val out = OutputStreamWriter(openFileOutput(fileName, 0))
-            for (elt in students) {
+            for (elt in studentAL) {
                 out.write(elt.toString())
                 out.write("\n")
             }

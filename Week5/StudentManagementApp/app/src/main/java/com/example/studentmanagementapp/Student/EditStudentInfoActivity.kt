@@ -20,7 +20,7 @@ class EditStudentInfoActivity : AppCompatActivity() {
     private var deleteBtn: Button? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun saveBtnHandler() {
+    private fun saveBtnHandler(position: Int) {
         val genderId = genderRadioGroup!!.checkedRadioButtonId
         val classId = classIdSpinner!!.selectedItem.toString()
 
@@ -29,7 +29,6 @@ class EditStudentInfoActivity : AppCompatActivity() {
                     TextUtils.isEmpty(classId) || genderId == -1
 
         if (isEmpty) {
-            Log.i("hehe", "Empty field")
             Toast.makeText(this, "All fields to be required", Toast.LENGTH_SHORT).show()
         } else {
             val selectedValue: RadioButton? = findViewById(genderId)
@@ -40,9 +39,37 @@ class EditStudentInfoActivity : AppCompatActivity() {
             val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
 
             // Đổi activity
-            val intent = Intent(this, StudentListActivity::class.java)
-            intent.putExtra("StudentInfoActivity", student.toString())
-            startActivityForResult(intent, 1111)
+            val intent = Intent()
+            intent.putExtra("EditStudentInfo", "$position - $student")
+            setResult(StudentActivity.EDIT, intent)
+            finish()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun deleteBtnHandler(position: Int) {
+        val genderId = genderRadioGroup!!.checkedRadioButtonId
+        val classId = classIdSpinner!!.selectedItem.toString()
+
+        val isEmpty =
+            TextUtils.isEmpty(fullNameEditText!!.text) || TextUtils.isEmpty(dobEditText!!.text) ||
+                    TextUtils.isEmpty(classId) || genderId == -1
+
+        if (isEmpty) {
+            Toast.makeText(this, "All fields to be required", Toast.LENGTH_SHORT).show()
+        } else {
+            val selectedValue: RadioButton? = findViewById(genderId)
+            val gender = selectedValue!!.text as String
+            val fullName = fullNameEditText!!.text.toString()
+            val dob = dobEditText!!.text.toString()
+
+            val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
+
+            // Đổi activity
+            val intent = Intent()
+            intent.putExtra("DeleteStudentInfo", "$position - $student")
+            setResult(StudentActivity.DELETE, intent)
+            finish()
         }
     }
 
@@ -79,14 +106,11 @@ class EditStudentInfoActivity : AppCompatActivity() {
         deleteBtn = findViewById(R.id.deleteBtn)
 
         saveBtn!!.setOnClickListener {
-            saveBtnHandler()
+            saveBtnHandler(position)
         }
 
         deleteBtn!!.setOnClickListener {
-            val replyIntent = Intent()
-            replyIntent.putExtra("DeleteStudentInfo", "$position")
-            setResult(0, replyIntent)
-            finish()
+            deleteBtnHandler(position)
         }
     }
 }
