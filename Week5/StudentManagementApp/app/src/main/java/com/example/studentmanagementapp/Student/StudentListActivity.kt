@@ -16,15 +16,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentmanagementapp.R
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
 
 
 class StudentListActivity : AppCompatActivity() {
-    private val fileName = "students_info.txt"
+    private val fileName = "students_info.json"
 
-    private val baseStudentAL = ArrayList<Student>()
+    private var baseStudentAL = ArrayList<Student>()
     private val studentAL = ArrayList<Student>()
     private val studentNameAL = ArrayList<String>()
 
@@ -187,26 +190,30 @@ class StudentListActivity : AppCompatActivity() {
                 val inputStream: InputStream? = openFileInput(fileName)
                 if (inputStream != null) {
                     val reader = BufferedReader(InputStreamReader(inputStream))
-                    var line: String? = reader.readLine()
-                    while (line != null) {
-                        val info = line.split(" - ")
+                    val json = reader.readText()
+                    baseStudentAL = Json.decodeFromString(json)
 
-                        // Push info
-                        baseStudentAL.add(
-                            Student(
-                                info[0],
-                                info[1],
-                                info[2],
-                                info[3],
-                                R.drawable.ic_baseline_school_24
-                            )
-                        )
-                        // Push name
-                        studentNameAL.add(info[0])
-
-                        line = reader.readLine()
-                    }
-                    inputStream.close()
+                    reader.close()
+//                    var line: String? = reader.readLine()
+//                    while (line != null) {
+//                        val info = line.split(" - ")
+//
+//                        // Push info
+//                        baseStudentAL.add(
+//                            Student(
+//                                info[0],
+//                                info[1],
+//                                info[2],
+//                                info[3],
+//                                R.drawable.ic_baseline_school_24
+//                            )
+//                        )
+//                        // Push name
+//                        studentNameAL.add(info[0])
+//
+//                        line = reader.readLine()
+//                    }
+//                    inputStream.close()
                 }
             }
 
@@ -220,10 +227,7 @@ class StudentListActivity : AppCompatActivity() {
         try {
             //File will be in "/data/data/$packageName/files/"
             val out = OutputStreamWriter(openFileOutput(fileName, 0))
-            for (elt in studentAL) {
-                out.write(elt.toString())
-                out.write("\n")
-            }
+            out.write(Json.encodeToString(baseStudentAL))
             out.flush()
             out.close()
         } catch (t: Throwable) {
