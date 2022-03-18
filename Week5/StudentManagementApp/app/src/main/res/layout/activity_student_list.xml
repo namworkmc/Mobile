@@ -60,4 +60,15 @@
             android:layout_marginEnd="100dp"
             android:backgroundTint="#029ce5" />
 
+    <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_baseline_grid_off_24"
+            android:id="@+id/toggleButton"
+            app:layout_constraintStart_toEndOf="@+id/studentsTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.818"
+            app:layout_constraintTop_toTopOf="@+id/studentsTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/studentsTextView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

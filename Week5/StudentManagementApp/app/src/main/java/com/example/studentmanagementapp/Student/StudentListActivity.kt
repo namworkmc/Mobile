@@ -7,12 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentmanagementapp.R
@@ -26,6 +24,7 @@ import java.nio.file.Paths
 
 class StudentListActivity : AppCompatActivity() {
     private val fileName = "students_info.json"
+    private var isToggle = false
 
     private var baseStudentAL = ArrayList<Student>()
     private val studentAL = ArrayList<Student>()
@@ -34,6 +33,7 @@ class StudentListActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var addStudentBtn: Button? = null
     private var searchAutoCompleteTV: AutoCompleteTextView? = null
+    private var toggleButton: ImageButton? = null
 
     private var studentsNameAdapter: ArrayAdapter<String>? = null
 
@@ -44,6 +44,7 @@ class StudentListActivity : AppCompatActivity() {
 
         loadStudentList()
 
+        // Recycler View
         recyclerView = findViewById(R.id.recyclerView)
         val studentAdapter = StudentAdapter(studentAL)
         recyclerView!!.adapter = studentAdapter
@@ -55,18 +56,21 @@ class StudentListActivity : AppCompatActivity() {
             startActivityForResult(intent, 1111)
         }
 
+        // Add button
         addStudentBtn = findViewById(R.id.addStudentBtn)
         addStudentBtn!!.setOnClickListener {
             val intent = Intent(this, StudentInfoActivity::class.java)
             startActivityForResult(intent, 1111)
         }
 
+        // Search autocomplete text view
         searchAutoCompleteTV = findViewById(R.id.searchAutoCompleteTV)
         studentsNameAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, studentNameAL)
         searchAutoCompleteTV!!.setAdapter(studentsNameAdapter)
         searchAutoCompleteTV!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
             @SuppressLint("NotifyDataSetChanged")
             override fun onTextChanged(searchStr: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (searchStr!!.isEmpty()) {
@@ -75,11 +79,28 @@ class StudentListActivity : AppCompatActivity() {
                     recyclerView!!.adapter!!.notifyDataSetChanged()
                 } else {
                     studentAL.clear()
-                    studentAL.addAll(baseStudentAL.filter { it.fullName.lowercase().startsWith(searchStr.toString().lowercase()) })
+                    studentAL.addAll(baseStudentAL.filter {
+                        it.fullName.lowercase().startsWith(searchStr.toString().lowercase())
+                    })
                     recyclerView!!.adapter!!.notifyDataSetChanged()
                 }
             }
         })
+
+        // Toggle image button
+        toggleButton = findViewById(R.id.toggleButton)
+        toggleButton!!.setOnClickListener {
+            isToggle = !isToggle
+            if (isToggle) {
+                recyclerView!!.layoutManager =
+                    GridLayoutManager(this, 2)
+                toggleButton!!.setImageResource(R.drawable.ic_baseline_grid_off_24)
+            } else {
+                recyclerView!!.layoutManager =
+                    LinearLayoutManager(this)
+                toggleButton!!.setImageResource(R.drawable.ic_baseline_grid_on_24)
+            }
+        }
     }
 
     override fun onStop() {
@@ -121,7 +142,7 @@ class StudentListActivity : AppCompatActivity() {
                         recyclerView!!.adapter!!.notifyItemRemoved(position)
 
                         // Remove name
-                        studentNameAL.removeAt(position)
+                        studentNameAL.remove(student.fullName)
                         studentsNameAdapter!!.notifyDataSetChanged()
                     }
                 }
@@ -192,28 +213,9 @@ class StudentListActivity : AppCompatActivity() {
                     val reader = BufferedReader(InputStreamReader(inputStream))
                     val json = reader.readText()
                     baseStudentAL = Json.decodeFromString(json)
+                    studentNameAL.addAll(baseStudentAL.map { it.fullName })
 
                     reader.close()
-//                    var line: String? = reader.readLine()
-//                    while (line != null) {
-//                        val info = line.split(" - ")
-//
-//                        // Push info
-//                        baseStudentAL.add(
-//                            Student(
-//                                info[0],
-//                                info[1],
-//                                info[2],
-//                                info[3],
-//                                R.drawable.ic_baseline_school_24
-//                            )
-//                        )
-//                        // Push name
-//                        studentNameAL.add(info[0])
-//
-//                        line = reader.readLine()
-//                    }
-//                    inputStream.close()
                 }
             }
 
@@ -226,10 +228,11 @@ class StudentListActivity : AppCompatActivity() {
     private fun saveStudentList() {
         try {
             //File will be in "/data/data/$packageName/files/"
-            val out = OutputStreamWriter(openFileOutput(fileName, 0))
-            out.write(Json.encodeToString(baseStudentAL))
-            out.flush()
-            out.close()
+            val writer = OutputStreamWriter(openFileOutput(fileName, 0))
+            writer.write(Json.encodeToString(baseStudentAL))
+
+            writer.flush()
+            writer.close()
         } catch (t: Throwable) {
             Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
         }
