@@ -22,9 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".ClassId.ClassIdListActivity"
-                android:exported="false" />
-        <activity
                 android:name=".Student.StudentInfoActivity"
                 android:exported="false">
         </activity>
