@@ -10,7 +10,7 @@ abstract class StudentDatabase : RoomDatabase() {
     abstract fun studentDAO(): StudentDAO
 
     companion object {
-        const val DB_NAME = "student_db"
+        private const val DB_NAME = "student_db"
         private var instance: StudentDatabase? = null
         fun getInstance(context: Context): StudentDatabase {
             return instance ?: buildDatabase(context).also { instance = it }

@@ -1,6 +1,5 @@
 package com.example.studentmanagementapp.Student.Activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -50,7 +49,7 @@ class AddStudentInfoActivity : AppCompatActivity() {
 
             // Đổi activity
             val intent = Intent()
-            intent.putExtra("StudentInfoActivity", student.toString())
+            intent.putExtra("StudentInfoActivity", student.id)
             setResult(StudentActivity.ADD, intent)
             finish()
         }
@@ -77,18 +76,6 @@ class AddStudentInfoActivity : AppCompatActivity() {
         // Event listener
         saveBtn!!.setOnClickListener {
             saveBtnHandler()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                val reply = data!!.getStringExtra("ClassIdActivity")
-                if (reply != null) {
-                    Log.i("hehe", reply)
-                }
-            }
         }
     }
 }

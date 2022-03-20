@@ -23,7 +23,7 @@ class EditStudentInfoActivity : AppCompatActivity() {
     private var deleteBtn: Button? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun saveBtnHandler(position: Int, id: String) {
+    private fun saveBtnHandler(position: Int, student: Student) {
         val genderId = genderRadioGroup!!.checkedRadioButtonId
         val classId = classIdSpinner!!.selectedItem.toString()
 
@@ -39,10 +39,13 @@ class EditStudentInfoActivity : AppCompatActivity() {
             val fullName = fullNameEditText!!.text.toString()
             val dob = dobEditText!!.text.toString()
 
-            val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
+            student.fullName = fullName
+            student.dob = dob
+            student.gender = gender
+            student.classId = classId
 
             // Update student info in database
-            db!!.studentDAO().updateStudent(db!!.studentDAO().getStudentById(id))
+            db!!.studentDAO().updateStudent(student)
 
             // Đổi activity
             val intent = Intent()
@@ -53,7 +56,7 @@ class EditStudentInfoActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun deleteBtnHandler(position: Int, id: String) {
+    private fun deleteBtnHandler(position: Int, student: Student) {
         val genderId = genderRadioGroup!!.checkedRadioButtonId
         val classId = classIdSpinner!!.selectedItem.toString()
 
@@ -64,20 +67,13 @@ class EditStudentInfoActivity : AppCompatActivity() {
         if (isEmpty) {
             Toast.makeText(this, "All fields to be required", Toast.LENGTH_SHORT).show()
         } else {
-            val selectedValue: RadioButton? = findViewById(genderId)
-            val gender = selectedValue!!.text as String
-            val fullName = fullNameEditText!!.text.toString()
-            val dob = dobEditText!!.text.toString()
-
-            val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
-
-            // Delete student in database
-            db!!.studentDAO().deleteStudent(db!!.studentDAO().getStudentById(id))
-
             // Đổi activity
             val intent = Intent()
-            intent.putExtra("DeleteStudentInfo", "$position - $student")
+            intent.putExtra("DeleteStudentInfo", "$position - ${student.id}")
             setResult(StudentActivity.DELETE, intent)
+
+            // Delete student in database
+            db!!.studentDAO().deleteStudent(student)
             finish()
         }
     }
@@ -104,25 +100,28 @@ class EditStudentInfoActivity : AppCompatActivity() {
 
         val position = info[0].toInt()
         val id = info[1]
-        fullNameEditText!!.setText(info[2])
-        dobEditText!!.setText(info[3])
-        when (info[4]) {
+
+        val student = db!!.studentDAO().getStudentById(id)
+
+        fullNameEditText!!.setText(student.fullName)
+        dobEditText!!.setText(student.dob)
+        when (student.gender) {
             "Male" -> findViewById<RadioButton>(R.id.maleRadioButton).isChecked = true
             "Female" -> findViewById<RadioButton>(R.id.femaleRadioButton).isChecked = true
             else -> findViewById<RadioButton>(R.id.otherRadioButton).isChecked = true
         }
-        classIdSpinner!!.setSelection(options.indexOf(info[5]))
+        classIdSpinner!!.setSelection(options.indexOf(student.classId))
 
         // Set event listener
         saveBtn = findViewById(R.id.saveBtn)
         deleteBtn = findViewById(R.id.deleteBtn)
 
         saveBtn!!.setOnClickListener {
-            saveBtnHandler(position, id)
+            saveBtnHandler(position, student)
         }
 
         deleteBtn!!.setOnClickListener {
-            deleteBtnHandler(position, id)
+            deleteBtnHandler(position, student)
         }
     }
 }

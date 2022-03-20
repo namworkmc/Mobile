@@ -16,10 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentmanagementapp.R
 import com.example.studentmanagementapp.Student.Student
 import com.example.studentmanagementapp.Student.StudentDatabase
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.io.*
-import java.nio.file.Paths
+import java.io.FileNotFoundException
 
 
 class StudentListActivity : AppCompatActivity() {
@@ -53,7 +50,7 @@ class StudentListActivity : AppCompatActivity() {
         recyclerView!!.setHasFixedSize(true)
         studentAdapter.onItemClick = { position, student ->
             val intent = Intent(this, EditStudentInfoActivity::class.java)
-            intent.putExtra("StudentListActivity", "$position - $student")
+            intent.putExtra("StudentListActivity", "$position - ${student.id}")
             startActivityForResult(intent, 1111)
         }
 
@@ -104,18 +101,6 @@ class StudentListActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        // Save student list
-//        saveStudentList()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // Save student list
-    //        saveStudentList()
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -127,25 +112,19 @@ class StudentListActivity : AppCompatActivity() {
                     val reply = data!!.getStringExtra("DeleteStudentInfo")
                     if (reply != null) {
                         val info = reply.split(" - ")
-                        val position = info[0].toInt()
-
-                        // Edit info
-                        val student = Student(
-                            info[2],
-                            info[3],
-                            info[4],
-                            info[5],
-                            R.drawable.ic_baseline_school_24
-                        )
+                        val id = info[1]
 
                         // Remove info
-                        baseStudentAL.remove(student)
-                        studentAL.remove(student)
+                        val position = studentAL.indexOfFirst { it.id == id }
+                        val removedStudent = studentAL.removeAt(position)
+
+                        baseStudentAL.removeIf { it.id == id }
+                        studentAL.removeIf { it.id == id }
 
                         recyclerView!!.adapter!!.notifyItemRemoved(position)
 
                         // Remove name
-                        studentNameAL.remove(student.fullName)
+                        studentNameAL.remove(removedStudent.fullName)
                         studentsNameAdapter!!.notifyDataSetChanged()
                     }
                 }
@@ -155,16 +134,12 @@ class StudentListActivity : AppCompatActivity() {
                     if (reply != null) {
                         val info = reply.split(" - ")
                         val position = info[0].toInt()
+                        val id = info[1]
 
                         // Edit info
                         val studentBeforeModify = studentAL[position]
-                        val modifiedStudent = Student(
-                            info[2],
-                            info[3],
-                            info[4],
-                            info[5],
-                            R.drawable.ic_baseline_school_24
-                        )
+
+                        val modifiedStudent = db!!.studentDAO().getStudentById(id)
 
                         // Info
                         val positionBeforeModify = baseStudentAL.indexOf(studentBeforeModify)
@@ -181,25 +156,17 @@ class StudentListActivity : AppCompatActivity() {
 
                 StudentActivity.ADD -> {
                     // TODO("add new student")
-                    val newStudentInfoStr = data!!.getStringExtra("StudentInfoActivity")
-                    if (newStudentInfoStr != null) {
-                        val newStudentInfo = newStudentInfoStr.split(" - ")
-
+                    val id = data!!.getStringExtra("StudentInfoActivity")
+                    if (id != null) {
                         // Info
-                        val newStudent = Student(
-                            newStudentInfo[1],
-                            newStudentInfo[2],
-                            newStudentInfo[3],
-                            newStudentInfo[4],
-                            R.drawable.ic_baseline_school_24
-                        )
+                        val newStudent = db!!.studentDAO().getStudentById(id)
                         baseStudentAL.add(newStudent)
                         studentAL.add(newStudent)
 
                         recyclerView!!.adapter!!.notifyItemInserted(studentAL.size - 1)
 
                         // Name
-                        studentNameAL.add(newStudentInfo[0])
+                        studentNameAL.add(newStudent.fullName)
                         studentsNameAdapter!!.notifyDataSetChanged()
                     }
                 }
@@ -216,19 +183,6 @@ class StudentListActivity : AppCompatActivity() {
             studentNameAL.addAll(baseStudentAL.map { it.fullName })
         } catch (e: FileNotFoundException) {
             Toast.makeText(this, "Exception: $e", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun saveStudentList() {
-        try {
-            //File will be in "/data/data/$packageName/files/"
-            val writer = OutputStreamWriter(openFileOutput(fileName, 0))
-            writer.write(Json.encodeToString(baseStudentAL))
-
-            writer.flush()
-            writer.close()
-        } catch (t: Throwable) {
-            Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
         }
     }
 }
