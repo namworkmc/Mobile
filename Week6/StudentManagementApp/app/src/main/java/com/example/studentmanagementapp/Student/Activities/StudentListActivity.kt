@@ -15,11 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentmanagementapp.R
 import com.example.studentmanagementapp.Student.Student
-import kotlinx.serialization.decodeFromString
+import com.example.studentmanagementapp.Student.StudentDatabase
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.*
-import java.nio.file.Files
 import java.nio.file.Paths
 
 
@@ -30,19 +29,20 @@ class StudentListActivity : AppCompatActivity() {
     private var baseStudentAL = ArrayList<Student>()
     private val studentAL = ArrayList<Student>()
     private val studentNameAL = ArrayList<String>()
+    private var studentsNameAdapter: ArrayAdapter<String>? = null
+    private var db: StudentDatabase? = null
 
     private var recyclerView: RecyclerView? = null
     private var addStudentBtn: Button? = null
     private var searchAutoCompleteTV: AutoCompleteTextView? = null
     private var toggleButton: ImageButton? = null
 
-    private var studentsNameAdapter: ArrayAdapter<String>? = null
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_list)
 
+        db = StudentDatabase.getInstance(this)
         loadStudentList()
 
         // Recycler View
@@ -60,7 +60,7 @@ class StudentListActivity : AppCompatActivity() {
         // Add button
         addStudentBtn = findViewById(R.id.addStudentBtn)
         addStudentBtn!!.setOnClickListener {
-            val intent = Intent(this, StudentInfoActivity::class.java)
+            val intent = Intent(this, AddStudentInfoActivity::class.java)
             startActivityForResult(intent, 1111)
         }
 
@@ -107,12 +107,13 @@ class StudentListActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         // Save student list
-        saveStudentList()
+//        saveStudentList()
     }
 
     override fun onPause() {
         super.onPause()
-        saveStudentList()
+        // Save student list
+    //        saveStudentList()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -130,10 +131,10 @@ class StudentListActivity : AppCompatActivity() {
 
                         // Edit info
                         val student = Student(
-                            info[1],
                             info[2],
                             info[3],
                             info[4],
+                            info[5],
                             R.drawable.ic_baseline_school_24
                         )
 
@@ -158,10 +159,10 @@ class StudentListActivity : AppCompatActivity() {
                         // Edit info
                         val studentBeforeModify = studentAL[position]
                         val modifiedStudent = Student(
-                            info[1],
                             info[2],
                             info[3],
                             info[4],
+                            info[5],
                             R.drawable.ic_baseline_school_24
                         )
 
@@ -186,10 +187,10 @@ class StudentListActivity : AppCompatActivity() {
 
                         // Info
                         val newStudent = Student(
-                            newStudentInfo[0],
                             newStudentInfo[1],
                             newStudentInfo[2],
                             newStudentInfo[3],
+                            newStudentInfo[4],
                             R.drawable.ic_baseline_school_24
                         )
                         baseStudentAL.add(newStudent)
@@ -209,19 +210,10 @@ class StudentListActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadStudentList() {
         try {
-            if (Files.exists(Paths.get("$filesDir/$fileName"))) {
-                val inputStream: InputStream? = openFileInput(fileName)
-                if (inputStream != null) {
-                    val reader = BufferedReader(InputStreamReader(inputStream))
-                    val json = reader.readText()
-                    baseStudentAL = Json.decodeFromString(json)
-                    studentNameAL.addAll(baseStudentAL.map { it.fullName })
-
-                    reader.close()
-                }
-            }
-
+            baseStudentAL.addAll(db!!.studentDAO().getAllStudents())
             studentAL.addAll(baseStudentAL)
+
+            studentNameAL.addAll(baseStudentAL.map { it.fullName })
         } catch (e: FileNotFoundException) {
             Toast.makeText(this, "Exception: $e", Toast.LENGTH_SHORT).show()
         }

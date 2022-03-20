@@ -11,10 +11,13 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentmanagementapp.R
 import com.example.studentmanagementapp.Student.Student
+import com.example.studentmanagementapp.Student.StudentDatabase
 
-class StudentInfoActivity : AppCompatActivity() {
+class AddStudentInfoActivity : AppCompatActivity() {
 
     private val REQUEST_CODE = 1111
+
+    private var db: StudentDatabase? = null
 
     private var fullNameEditText: EditText? = null
     private var dobEditText: EditText? = null
@@ -42,6 +45,9 @@ class StudentInfoActivity : AppCompatActivity() {
 
             val student = Student(fullName, dob, gender, classId, R.drawable.ic_baseline_school_24)
 
+            // Insert into database
+            db!!.studentDAO().insertStudent(student)
+
             // Đổi activity
             val intent = Intent()
             intent.putExtra("StudentInfoActivity", student.toString())
@@ -54,6 +60,8 @@ class StudentInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_information)
+
+        db = StudentDatabase.getInstance(this)
 
         // Lấy component
         fullNameEditText = findViewById(R.id.fullNameEditText)

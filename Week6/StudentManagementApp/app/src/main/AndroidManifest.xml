@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".Student.Activities.StudentInfoActivity"
+                android:name=".Student.Activities.AddStudentInfoActivity"
                 android:exported="false">
         </activity>
     </application>
